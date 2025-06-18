@@ -31,7 +31,7 @@ try:
         cursor.execute("SELECT status FROM motor_kontrol WHERE id=1")  # Henter status-værdi
         status = cursor.fetchone()[0]  # Gemmer værdien (0 eller 1)
 
-        if status != last_status:
+        if status != last_status: # != not equal to, altså hvis statusen ikke er det samme som "last_status" så kører if
             if status == 1:
                 print("-Låser op-")
                 servo.ChangeDutyCycle(12.5)  # Ca. 180 grader
