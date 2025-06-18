@@ -153,51 +153,53 @@
   </footer>
 
   <script>
-    async function hentData() {
+    async function hentData() {   // Funktion til at hente data fra en JSON-fil og vise det på siden
       try {
-        const respons = await fetch('data.json', { cache: "no-store" });
-        const data = await respons.json();
-        document.getElementById('liter').textContent = data.liter.toFixed(2) + ' L';
+        const respons = await fetch('data.json', { cache: "no-store" }); // Henter 'data.json' uden cache (så nyeste data altid vises)
+        const data = await respons.json(); // Parser JSON-data fra responsen
+        // Viser mængden liter og pris på siden med to decimaler
+        document.getElementById('liter').textContent = data.liter.toFixed(2) + ' L';  
         document.getElementById('pris').textContent = data.total_price.toFixed(2) + ' DKK';
       } catch (error) {
+        // Viser fejl i konsollen, hvis noget går galt under hentningen
         console.error('Fejl ved hentning af data:', error);
       }
     }
-
+// Funktion til at sende en forespørgsel til serveren for at nulstille data
     function opdaterDatabase() {
       fetch('update.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'action=reset'
+        method: 'POST', // Sender som POST
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, // Header til form data
+        body: 'action=reset' //Selve dataen der sendes (form-encoded)
       })
       .then(res => {
-        if (!res.ok) throw new Error("Fejl: " + res.status);
-        return res.text();
+        if (!res.ok) throw new Error("Fejl: " + res.status); // Fejl hvis status ikke er OK (200)
+        return res.text(); // Læs svaret som tekst
       })
-      .then(data => alert("Svar fra server: " + data))
+      .then(data => alert("Svar fra server: " + data)) // Vis serverens svar i en popup
       .catch(err => {
-        alert("Noget gik galt: " + err.message);
-        console.error(err);
+        alert("Noget gik galt: " + err.message); // Vis fejl i popup hvis noget går galt
+        console.error(err); // Log fejlen i konsollen
   });
     }
-
+// Funktion til at sende forespørgsel om at toggle motorstatus
     function toggleMotor() {
       fetch('motor.php', {
-        method: 'POST'
+        method: 'POST' // Simpel POST-anmodning uden body
       })
       .then(res => {
-        if (!res.ok) throw new Error("Fejl: " + res.status);
-        return res.text();
+        if (!res.ok) throw new Error("Fejl: " + res.status); // Fejlhåndtering hvis status ikke OK
+        return res.text(); // Læs svaret som tekst
       })
-      .then(data => alert("Svar fra server: " + data))
+      .then(data => alert("Svar fra server: " + data)) // Vis svar fra serveren
       .catch(err => {
-        alert("Noget gik galt: " + err.message);
-        console.error(err);
+        alert("Noget gik galt: " + err.message); // Vis fejlbesked
+        console.error(err); // Log fejlen
       });
     }
 
-    hentData();
-    setInterval(hentData, 1000);
+    hentData(); // Hent data første gang når siden indlæses
+    setInterval(hentData, 1000); // Hent ny data hvert sekund (live opdatering)
   </script>
 
 </body>
